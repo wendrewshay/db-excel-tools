@@ -2,9 +2,7 @@ package com.wql.database.tools.controller;
 
 import com.wql.database.tools.domain.ConnectionParams;
 import com.wql.database.tools.entity.ColumnInfo;
-import com.wql.database.tools.entity.TableInfo;
 import com.wql.database.tools.service.SchemaService;
-import com.wql.database.tools.service.TableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -24,8 +24,6 @@ public class HomeController {
 
     @Autowired
     private SchemaService schemaService;
-    @Autowired
-    private TableService tableService;
 
     /**
      * 查询所有表元信息
@@ -34,7 +32,7 @@ public class HomeController {
      */
     @GetMapping(value = "/queryTables")
     @ResponseBody
-    public List<TableInfo> queryTables(ConnectionParams params) {
+    public List queryTables(ConnectionParams params) {
         return schemaService.queryTables(params);
     }
 
@@ -47,6 +45,11 @@ public class HomeController {
     @GetMapping(value = "/queryColumnsOf/{tableName}")
     @ResponseBody
     public List<ColumnInfo> queryColumnInfo(ConnectionParams params, @PathVariable(name = "tableName") String tableName) {
-        return tableService.queryColumnInfo(params, tableName);
+        return schemaService.queryColumnInfo(params, tableName);
+    }
+
+    @GetMapping(value = "export")
+    public void export(HttpServletRequest request, HttpServletResponse response, ConnectionParams params) {
+
     }
 }
