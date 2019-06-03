@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.wql</groupId>
-    <artifactId>database-tools</artifactId>
+    <artifactId>db-excel-tools</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>database-tools</name>
     <description>数据库操作工具</description>
@@ -63,6 +63,7 @@
     </dependencies>
 
     <build>
+        <finalName>db-excel-tools</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
