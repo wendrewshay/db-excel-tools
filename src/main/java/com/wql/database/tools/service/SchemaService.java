@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 数据库模式逻辑层
@@ -101,7 +103,7 @@ public class SchemaService {
             for (int m = 0; m < tableInfoList.size(); m ++) {
                 TableInfo tableInfo = tableInfoList.get(m);
                 String sheetName = !StringUtils.isEmpty(tableInfo.getTableComment()) ? tableInfo.getTableComment() : "未知表" + (m + 1);
-                HSSFSheet sheet = workbook.createSheet(sheetName);
+                HSSFSheet sheet = workbook.createSheet(handleSpecialCharacter(sheetName));
                 // 设置表头部单元
                 HSSFRow row = sheet.createRow(0);
                 HSSFCell cell;
@@ -124,11 +126,25 @@ public class SchemaService {
                 // 列宽自适应
                 for (int i = 0; i < heads.length; i++) {
                     sheet.autoSizeColumn(i);
-                    sheet.setColumnWidth(i,sheet.getColumnWidth(i)*16/10);
+                    // 列宽超过255个字符时设置自动列宽会有问题，所以这里加个判断
+                    int columnWidth = sheet.getColumnWidth(i) >= 255*256 ? 255*256 : sheet.getColumnWidth(i);
+                    sheet.setColumnWidth(i, sheet.getColumnWidth(i) >= 255*256 ? columnWidth : (columnWidth * 16 / 10 > 255*256 ? 255*256 : columnWidth * 16 / 10));
                 }
             }
         }
         FileUtils.createFile(response, workbook);
+    }
+
+    /**
+     * 处理sheet名称特殊字符
+     * @param sheetName 表格名称
+     * @return String
+     */
+    private String handleSpecialCharacter(String sheetName) {
+        String regEx = "[/?*\\[\\]]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(sheetName);
+        return m.replaceAll("A").trim();
     }
 
     /**
