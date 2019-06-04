@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="renderer" content="webkit"/>
+    <title>数据库字段信息导出工具</title>
+
+    <!-- css -->
+    <link th:href="@{/bootstrap-3.3.7/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap-3.3.7/css/bootstrap-treeview.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/home.css}" rel="stylesheet"/>
+    <!-- javascript -->
+    <script th:src="@{/jquery/jquery-1.9.1.js}"></script>
+    <script th:src="@{/bootstrap-3.3.7/js/bootstrap.js}"></script>
+    <script th:src="@{/bootstrap-3.3.7/js/bootstrap-treeview.min.js}"></script>
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-4">
+                <div class="tree-region sidebar-nav">
+                    <h3>数据库表菜单树</h3>
+                    <div id="tree"></div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="leaderboard">
+                    <h1>操作说明：</h1><br>
+                    <p>1.先录入数据库连接信息：主机名或IP地址/端口/用户名/密码/数据库名，点击[连接]按钮，或重置；</p>
+                    <p>2.如果数据库连接正常，在页面左侧会显示库中所有表名，你可以勾选任意表，然后点击下面[导出]按钮得到你想要的Excel表格。</p>
+                    <p><a class="btn btn-primary btn-large">导出</a></p>
+                </div>
+                <div class="row-fluid bg-info" style="padding-top: 15px; padding-bottom: 10px">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="ip" class="col-sm-3 control-label">主机名或IP地址</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="ip" placeholder="主机名或IP地址">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="port" class="col-sm-3 control-label">端口</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="port" placeholder="端口">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="col-sm-3 control-label">用户名</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="username" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-3 control-label">密码</label>
+                            <div class="col-sm-5">
+                                <input type="password" class="form-control" id="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dbName" class="col-sm-3 control-label">数据库名</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="dbName" placeholder="数据库名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-5">
+                                <button type="submit" class="btn btn-success btn-lg">连接</button>
+                                <button type="reset" class="btn btn-warning btn-lg">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+                <footer>
+                    <p>&copy; Copyright 2019 Wendrewshay. All Rights Reserved.</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/home.js}"></script>
+</body>
+</html>

@@ -29,6 +29,15 @@ public class HomeController {
     private SchemaService schemaService;
 
     /**
+     * 主页面
+     * @return String
+     */
+    @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+
+    /**
      * 查询所有表元信息
      * @param params 连接参数
      * @return List<TableInfo>
