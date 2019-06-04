@@ -75,7 +75,7 @@ public class HomeController {
      * 处理验证错误信息
      * @param response 响应对象
      * @param result   错误结果
-     * @return
+     * @return boolean
      */
     private boolean handleValidatedError(HttpServletResponse response, BindingResult result) throws IOException {
         if (result.hasErrors()) {
