@@ -1,8 +1,11 @@
 package com.wql.database.tools.domain;
 
+import com.wql.database.tools.entity.TableInfo;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 数据库连接参数
@@ -35,4 +38,9 @@ public class ConnectionParams {
      */
     @NotBlank(message = "数据库名称不能为空")
     private String dbName;
+
+    /**
+     * 指定导出表名
+     */
+    private List<TableInfo> tableList;
 }

@@ -1,6 +1,7 @@
 body {
     padding-top: 10px;
     padding-bottom: 10px;
+    background-image: url("/images/background.jpg");
 }
 .nav li {
     padding-top: 5px;
@@ -12,7 +13,7 @@ body {
 .leaderboard {
     padding: 10px;
     margin-bottom: 20px;
-    /*background-image: url('/images/gridbg.gif');*/
+    background-image: url('/images/gridbg.gif');
     background-repeat:repeat;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -39,6 +40,7 @@ body {
     border-radius: 6px;
     height:0;
     padding-bottom:100%;
+    overflow-y:scroll;
 }
 
 .tree-region h4 {

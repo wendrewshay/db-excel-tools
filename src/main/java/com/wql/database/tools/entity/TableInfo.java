@@ -16,4 +16,12 @@ public class TableInfo {
      * 表注释
      */
     private String tableComment;
+
+    public TableInfo(String tableName, String tableComment) {
+        this.tableName = tableName;
+        this.tableComment = tableComment;
+    }
+
+    public TableInfo() {
+    }
 }

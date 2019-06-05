@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -75,7 +76,10 @@ public class SchemaService {
      */
     public void handle(HttpServletResponse response, ConnectionParams params) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(params);
-        List<TableInfo> tableInfoList = jdbcTemplate.query(QUERY_ALL_TABLES_SQL, new String[]{params.getDbName()}, new BeanPropertyRowMapper(TableInfo.class));
+        List<TableInfo> tableInfoList = params.getTableList();
+        if (CollectionUtils.isEmpty(tableInfoList)) {
+            tableInfoList = jdbcTemplate.query(QUERY_ALL_TABLES_SQL, new String[]{params.getDbName()}, new BeanPropertyRowMapper(TableInfo.class));
+        }
         HSSFWorkbook workbook = new HSSFWorkbook();
         // 表头部单元字体
         HSSFFont headFont = workbook.createFont();

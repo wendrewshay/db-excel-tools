@@ -1,22 +1,33 @@
 var connectionInfos = {}; // 当前连接信息
 $(function(){
+    /**
+     * 连接按钮点击事件
+     */
     $("#connBtn").on("click", function(){
+        // 封装表单参数
         var serializeArray = $("#connForm").serializeArray();
         for (var i = 0; i < serializeArray.length; i ++) {
             connectionInfos[serializeArray[i].name] =  serializeArray[i].value;
         }
-        // console.log(connectionInfos);
-        /**
-         * 请求数据库表
-         */
+        // 验证表单参数合法性
+        var result = validateForm(connectionInfos);
+        if (result) {
+            alert(result);
+            return false;
+        }
+        // 发起请求
         $.ajax({
             url: "/queryTables",
             method: "GET",
             data: $("#connForm").serialize(),
             dataType: "json",
             success:function(resp) {
-                // console.log(JSON.stringify(resp));
-                loadTreeNodes(constructTreeNodes(resp));
+                if (resp && resp["errorCode"] == 200) {
+                    // console.log(JSON.stringify(resp));
+                    loadTreeNodes(constructTreeNodes(resp.data));
+                } else {
+                    alert(resp["errorMessage"]);
+                }
             },
             error:function(e) {
                 console.log(e);
@@ -24,7 +35,49 @@ $(function(){
         });
         return false;
     });
+
+    /**
+     * 导出按钮点击事件
+     */
+    $("#exportBtn").on("click", function(){
+        if (!$("#tree").html()) {
+            alert("没有可以导出的表，请仔细看操作说明！");
+            return;
+        }
+        var parentNode = $("#tree").treeview("getNode", 0);
+        if (parentNode.state.checked) {
+            window.location.href = "/export?" + $.param(connectionInfos);
+        } else {
+            var checkedNodes = $("#tree").treeview("getChecked");
+            if (checkedNodes && checkedNodes.length > 0) {
+                var tableArray = [];
+                for (var x in checkedNodes) {
+                    if (checkedNodes[x].nodeId === 0) {continue;}
+                    tableArray.push({"tableName": checkedNodes[x].text, "tableComment": checkedNodes[x].tags[0]});
+                }
+                connectionInfos["tablesJson"] = JSON.stringify(tableArray);
+                window.location.href = "/exportWithAssignedTables?" + $.param(connectionInfos);
+            } else {
+                alert("没有可以导出的表，请仔细看操作说明！");
+            }
+        }
+        return false;
+    });
 });
+
+/**
+ * 校验参数
+ * @param formData
+ * @returns {string|null}
+ */
+function validateForm(formData) {
+    for (var key in formData) {
+        if (!$.trim(formData[key])) {
+            return $("#" + key).attr("placeholder") + "不能为空";
+        }
+    }
+    return null;
+}
 
 /**
  * 组合树节点
@@ -34,7 +87,7 @@ $(function(){
 function constructTreeNodes(tableInfos) {
     var tree = [{text: connectionInfos.dbName, nodes: []}];
     for (var i = 0; i < tableInfos.length; i ++) {
-        tree[0].nodes.push({text: tableInfos[i]["tableComment"], tags:[tableInfos[i]["tableName"]]});
+        tree[0].nodes.push({text: tableInfos[i]["tableName"], tags:[tableInfos[i]["tableComment"]]});
     }
     return tree;
 }

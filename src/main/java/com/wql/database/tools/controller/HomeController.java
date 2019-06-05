@@ -1,20 +1,23 @@
 package com.wql.database.tools.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wql.database.tools.domain.ConnectionParams;
+import com.wql.database.tools.domain.ResponseMessage;
 import com.wql.database.tools.entity.ColumnInfo;
+import com.wql.database.tools.entity.TableInfo;
 import com.wql.database.tools.service.SchemaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-public class HomeController {
+public class HomeController extends BaseController{
 
     @Autowired
     private SchemaService schemaService;
@@ -44,11 +47,13 @@ public class HomeController {
      */
     @GetMapping(value = "/queryTables")
     @ResponseBody
-    public List queryTables(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws IOException {
+    public ResponseMessage queryTables(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws IOException {
+        log.info(">>> 请求参数：{}", JSONObject.toJSONString(params));
         if (handleValidatedError(response, result)) {
             return null;
         }
-        return schemaService.queryTables(params);
+        List list = schemaService.queryTables(params);
+        return new ResponseMessage(200, "成功", list);
     }
 
     /**
@@ -71,9 +76,11 @@ public class HomeController {
      * 导出指定数据库中所有表字段信息到Excel
      * @param response 响应对象
      * @param params   数据库连接参数
+     * @param result   错误绑定对象
      */
     @GetMapping(value = "export")
     public void export(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws IOException {
+        log.info(">>> 请求参数：{}", JSONObject.toJSONString(params));
         if (handleValidatedError(response, result)) {
             return;
         }
@@ -81,22 +88,19 @@ public class HomeController {
     }
 
     /**
-     * 处理验证错误信息
+     * 导出数据库中指定表的字段信息到Excel
      * @param response 响应对象
-     * @param result   错误结果
-     * @return boolean
+     * @param params   数据库连接参数
+     * @param result   错误绑定对象
      */
-    private boolean handleValidatedError(HttpServletResponse response, BindingResult result) throws IOException {
-        if (result.hasErrors()) {
-            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
-            log.error(">>> 参数验证错误：{}", errorMessage);
-            response.setCharacterEncoding("GBK");
-            PrintWriter writer = response.getWriter();
-            writer.write(errorMessage);
-            writer.flush();
-            writer.close();
-            return true;
+    @GetMapping(value = "exportWithAssignedTables")
+    public void exportWithAssignedTables(HttpServletResponse response, @RequestParam(value = "tablesJson") String tablesJson, @Validated ConnectionParams params, BindingResult result) throws IOException {
+        log.info(">>> 请求参数params = {}, tablesJson = {}", JSONObject.toJSONString(params), tablesJson);
+        if (handleValidatedError(response, result)) {
+            return;
         }
-        return false;
+        List<TableInfo> tableInfos = JSONArray.parseArray(tablesJson, TableInfo.class);
+        params.setTableList(tableInfos);
+        schemaService.handle(response, params);
     }
 }
