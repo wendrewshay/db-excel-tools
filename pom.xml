@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.wql</groupId>
     <artifactId>db-excel-tools</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>database-tools</name>
     <description>数据库操作工具</description>
 

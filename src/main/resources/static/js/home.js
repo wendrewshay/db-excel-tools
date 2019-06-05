@@ -21,6 +21,9 @@ $(function(){
             method: "GET",
             data: $("#connForm").serialize(),
             dataType: "json",
+            beforeSend:function(XMLHttpRequest){
+                $("#loadingModal").modal('show');
+            },
             success:function(resp) {
                 if (resp && resp["errorCode"] == 200) {
                     // console.log(JSON.stringify(resp));
@@ -28,6 +31,9 @@ $(function(){
                 } else {
                     alert(resp["errorMessage"]);
                 }
+            },
+            complete:function(XMLHttpRequest,textStatus){
+                $('#loadingModal').modal('hide');
             },
             error:function(e) {
                 console.log(e);
@@ -44,6 +50,7 @@ $(function(){
             alert("没有可以导出的表，请仔细看操作说明！");
             return;
         }
+        $("#loadingModal").modal('show');
         var parentNode = $("#tree").treeview("getNode", 0);
         if (parentNode.state.checked) {
             window.location.href = "/export?" + $.param(connectionInfos);
@@ -61,6 +68,7 @@ $(function(){
                 alert("没有可以导出的表，请仔细看操作说明！");
             }
         }
+        $("#loadingModal").modal('hide');
         return false;
     });
 });
