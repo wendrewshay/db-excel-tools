@@ -47,7 +47,7 @@ public class HomeController extends BaseController{
      */
     @GetMapping(value = "/queryTables")
     @ResponseBody
-    public ResponseMessage queryTables(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws IOException {
+    public ResponseMessage queryTables(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws Exception {
         log.info(">>> 请求参数：{}", JSONObject.toJSONString(params));
         if (handleValidatedError(response, result)) {
             return null;
@@ -65,7 +65,7 @@ public class HomeController extends BaseController{
     @GetMapping(value = "/queryColumnsOf/{tableName}")
     @ResponseBody
     public List<ColumnInfo> queryColumnInfo(HttpServletResponse response, @Validated ConnectionParams params,
-                                            @PathVariable(name = "tableName") String tableName, BindingResult result) throws IOException {
+                                            @PathVariable(name = "tableName") String tableName, BindingResult result) throws Exception {
         if (handleValidatedError(response, result)) {
             return null;
         }
@@ -79,7 +79,7 @@ public class HomeController extends BaseController{
      * @param result   错误绑定对象
      */
     @GetMapping(value = "export")
-    public void export(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws IOException {
+    public void export(HttpServletResponse response, @Validated ConnectionParams params, BindingResult result) throws Exception {
         log.info(">>> 请求参数：{}", JSONObject.toJSONString(params));
         if (handleValidatedError(response, result)) {
             return;
@@ -94,7 +94,7 @@ public class HomeController extends BaseController{
      * @param result   错误绑定对象
      */
     @GetMapping(value = "exportWithAssignedTables")
-    public void exportWithAssignedTables(HttpServletResponse response, @RequestParam(value = "tablesJson") String tablesJson, @Validated ConnectionParams params, BindingResult result) throws IOException {
+    public void exportWithAssignedTables(HttpServletResponse response, @RequestParam(value = "tablesJson") String tablesJson, @Validated ConnectionParams params, BindingResult result) throws Exception {
         log.info(">>> 请求参数params = {}, tablesJson = {}", JSONObject.toJSONString(params), tablesJson);
         if (handleValidatedError(response, result)) {
             return;

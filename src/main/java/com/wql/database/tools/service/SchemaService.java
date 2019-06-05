@@ -52,7 +52,7 @@ public class SchemaService {
      * @author created by wendrewshay on 2019/06/03 10:00
      * @return List<TableInfo>
      */
-    public List queryTables(ConnectionParams params) {
+    public List queryTables(ConnectionParams params) throws Exception{
         JdbcTemplate jdbcTemplate = getJdbcTemplate(params);
         List list = jdbcTemplate.query(QUERY_ALL_TABLES_SQL, new String[]{params.getDbName()}, new BeanPropertyRowMapper(TableInfo.class));
         return list;
@@ -63,7 +63,7 @@ public class SchemaService {
      * @author created by wendrewshay on 2019/06/03 10:00
      * @return List<TableInfo>
      */
-    public List<ColumnInfo> queryColumnInfo(ConnectionParams params, String tableName) {
+    public List<ColumnInfo> queryColumnInfo(ConnectionParams params, String tableName) throws Exception{
         JdbcTemplate jdbcTemplate = getJdbcTemplate(params);
         List<ColumnInfo> columnInfoList = jdbcTemplate.query(QUERY_COLUMN_INFO_SQL, new String[]{tableName, params.getDbName()}, new BeanPropertyRowMapper<>(ColumnInfo.class));
         return columnInfoList;
@@ -74,7 +74,7 @@ public class SchemaService {
      * @param response 响应对象
      * @param params   连接参数
      */
-    public void handle(HttpServletResponse response, ConnectionParams params) {
+    public void handle(HttpServletResponse response, ConnectionParams params) throws Exception{
         JdbcTemplate jdbcTemplate = getJdbcTemplate(params);
         List<TableInfo> tableInfoList = params.getTableList();
         if (CollectionUtils.isEmpty(tableInfoList)) {
