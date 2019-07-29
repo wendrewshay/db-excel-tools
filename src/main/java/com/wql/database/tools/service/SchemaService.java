@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -104,9 +105,15 @@ public class SchemaService {
         bCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         uniBorderStyleWithThin(bCellStyle);
         if (!CollectionUtils.isEmpty(tableInfoList)) {
+            List<String> tableComments = new ArrayList<>();
             for (int m = 0; m < tableInfoList.size(); m ++) {
                 TableInfo tableInfo = tableInfoList.get(m);
                 String sheetName = !StringUtils.isEmpty(tableInfo.getTableComment()) ? tableInfo.getTableComment() : "未知表" + (m + 1);
+                if (!sheetName.startsWith("未知表") && tableComments.contains(sheetName)) {
+                    sheetName += System.currentTimeMillis();
+                } else {
+                    tableComments.add(sheetName);
+                }
                 HSSFSheet sheet = workbook.createSheet(handleSpecialCharacter(sheetName));
                 // 设置表头部单元
                 HSSFRow row = sheet.createRow(0);
@@ -135,6 +142,7 @@ public class SchemaService {
                     sheet.setColumnWidth(i, sheet.getColumnWidth(i) >= 255*256 ? columnWidth : (columnWidth * 16 / 10 > 255*256 ? 255*256 : columnWidth * 16 / 10));
                 }
             }
+            tableComments.clear();
         }
         FileUtils.createFile(response, workbook);
     }
